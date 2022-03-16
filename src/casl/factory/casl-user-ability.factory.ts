@@ -17,7 +17,6 @@ export class CaslUserAbilityFactory {
 
     async createForUser(userId: string) {
         const user = await this.userService.findUser({ id: userId });
-        console.log(user);
         if(!user) {
             throw new UnauthorizedException("user not exists or deleted");
         }

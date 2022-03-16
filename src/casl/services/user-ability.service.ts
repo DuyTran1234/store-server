@@ -1,4 +1,5 @@
 import { Catch, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { LazyModuleLoader } from "@nestjs/core";
 import { plainToInstance } from "class-transformer";
 import { User } from "src/user/schemas/user.schema";
 import { UserService } from "src/user/services/user.service";
@@ -9,6 +10,7 @@ import { CaslUserAbilityFactory } from "../factory/casl-user-ability.factory";
 @Injectable()
 export class UserAbilityService {
     constructor(
+        private lazyModuleLoader: LazyModuleLoader,
         private userAbilityFactory: CaslUserAbilityFactory,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
     ) { }

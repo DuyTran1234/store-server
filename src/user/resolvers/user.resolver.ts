@@ -24,7 +24,6 @@ export class UserResolver {
         const checkAbility = await this.userAbility.getUser(user.id, id);
         if (checkAbility) {
             const getUser = await this.userService.findUser({ id: id });
-            console.log(getUser);
             return getUser;
         }
     }
@@ -33,21 +32,18 @@ export class UserResolver {
     async getUserPublic(@Args("id") id: string): Promise<any> {
         const getUserPublic = await this.userService.findUser({ id: id });
         const { password, role, phone, email, refreshToken, dob, address, ...rest } = getUserPublic;
-        console.log(getUserPublic);
         return rest;
     }
 
-    @UsePipes(CreateUserValidation)
     @Mutation((returns) => User)
-    async createUser(@Args() createUserDto: CreateUserDto): Promise<any> {
+    async createUser(@Args(CreateUserValidation) createUserDto: CreateUserDto): Promise<any> {
         const create = await this.userService.createUser(createUserDto);
         return create;
     }
 
-    @UsePipes(UpdateUserValidation)
     @UseGuards(JwtAuthGuard)
     @Mutation((returns) => User)
-    async updateUser(@Args() updateUserDto: UpdateUserDto, @CurrentUser() user: any): Promise<any> {
+    async updateUser(@Args(UpdateUserValidation) updateUserDto: UpdateUserDto, @CurrentUser() user: any): Promise<any> {
         const checkAbility = await this.userAbility.updateUser(user.id, updateUserDto.id);
         if (checkAbility) {
             const update = await this.userService.updateUser(updateUserDto) as any;

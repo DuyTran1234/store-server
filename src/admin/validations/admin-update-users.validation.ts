@@ -13,8 +13,6 @@ export class AdminUpdateUsersValidation implements PipeTransform {
         for (const item of value) {
             const plainObj = plainToInstance(UpdateUserDto, item);
             const errors = await validate(plainObj, {
-                whitelist: true,
-                forbidNonWhitelisted: true,
                 skipMissingProperties: true,
             });
             if(errors.length > 0) {

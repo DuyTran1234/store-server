@@ -1,4 +1,5 @@
 import { Catch, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { LazyModuleLoader } from "@nestjs/core";
 import { UserService } from "src/user/services/user.service";
 import { Action } from "../action.enum";
 import { CaslUserAbilityFactory } from "../factory/casl-user-ability.factory";
@@ -7,6 +8,7 @@ import { CaslUserAbilityFactory } from "../factory/casl-user-ability.factory";
 @Injectable()
 export class AdminAbilityService {
     constructor(
+        private lazyModuleLoader: LazyModuleLoader,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
         private userAbilityFactory: CaslUserAbilityFactory,
     ) { }

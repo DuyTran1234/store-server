@@ -1,4 +1,5 @@
 import { BadRequestException, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { LazyModuleLoader } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { HashDataService } from "src/shared/services/hash-data.service";
 import { UserService } from "src/user/services/user.service";
@@ -6,6 +7,7 @@ import { UserService } from "src/user/services/user.service";
 @Injectable()
 export class AuthService {
     constructor(
+        private lazyModuleLoader: LazyModuleLoader,
         @Inject(forwardRef(() => UserService)) private userService: UserService,
         private hashDataService: HashDataService,
         private jwtService: JwtService,
@@ -29,7 +31,6 @@ export class AuthService {
     }
 
     async signJwt(user: any) {
-        console.log(user);
         const payload = { id: user._id, username: user.username };
         return {
             accessToken: this.jwtService.sign(payload),

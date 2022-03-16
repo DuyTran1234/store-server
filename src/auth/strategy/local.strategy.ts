@@ -12,7 +12,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, "local-strategy") 
     }
 
     async validate(username: string, password: string): Promise<any> {
-        console.log(`validate login: ${username} + ${password}`);
         const user = this.authService.validateUser(username, password);
         if (!user) {
             throw new UnauthorizedException();

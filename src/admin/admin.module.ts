@@ -4,6 +4,7 @@ import { CaslModule } from "src/casl/casl.module";
 import { User, UserSchema } from "src/user/schemas/user.schema";
 import { UserModule } from "src/user/user.module";
 import { AdminController } from "./controllers/admin.controller";
+import { AdminResolver } from "./resolvers/admin.resolver";
 import { AdminService } from "./services/admin.service";
 
 
@@ -17,12 +18,13 @@ import { AdminService } from "./services/admin.service";
     ],
     providers: [
         AdminService,
+        AdminResolver,
     ],
     controllers: [
         AdminController,
     ],
     exports: [
-
+        AdminResolver,
     ],
 })
 export class AdminModule { }

@@ -6,11 +6,13 @@ import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UserService } from "src/user/services/user.service";
 import { HashDataService } from "src/shared/services/hash-data.service";
 import { UpdateUserDto } from "src/user/dto/update-user.dto";
+import { LazyModuleLoader } from "@nestjs/core";
 
 @Catch()
 @Injectable()
 export class AdminService {
     constructor(
+        private lazyModuleLoader: LazyModuleLoader,
         @InjectModel(User.name) private userModel: Model<UserDocument>,
         private userService: UserService,
         private hashDataService: HashDataService,
@@ -25,7 +27,7 @@ export class AdminService {
             const rs = await Promise.all<User>(createUsers);
             return rs;
         } catch (error) {
-            throw new BadRequestException("create users failed");
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -38,7 +40,7 @@ export class AdminService {
             const rs = await Promise.all<User>(updateUsers);
             return rs;
         } catch (error) {
-            throw new BadRequestException("update users failed");
+            throw new BadRequestException(error.message);
         }
     }
 
@@ -51,7 +53,7 @@ export class AdminService {
             });
             return get;
         } catch (error) {
-            throw new BadRequestException("get users failed");
+            throw new BadRequestException("get list users failed");
         }
     }
 

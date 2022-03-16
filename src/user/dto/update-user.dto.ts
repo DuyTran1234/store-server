@@ -1,7 +1,8 @@
-import { ArgsType, Field } from "@nestjs/graphql";
+import { ArgsType, Field, InputType } from "@nestjs/graphql";
 import { IsDefined, Matches, Validate } from "class-validator";
 import { UserRegex } from "../regex/user.regex";
 import { CustomDateValidation } from "../validations/custom-date.validation";
+@InputType()
 @ArgsType()
 export class UpdateUserDto {
     @Field()

@@ -12,8 +12,6 @@ export class AdminCreateUsersValidation implements PipeTransform {
         for (const item of value) {
             const plainObj = plainToInstance(CreateUserDto, item);
             const errors = await validate(plainObj, {
-                whitelist: true,
-                forbidNonWhitelisted: true,
                 skipMissingProperties: true,
             });
             if (errors.length > 0) {

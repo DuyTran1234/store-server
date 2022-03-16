@@ -7,7 +7,6 @@ import { LoginUserDto } from "../dto/login-user.dto";
 @Injectable()
 export class LoginUserValidation implements PipeTransform {
     async transform(value: any, metadata: ArgumentMetadata): Promise<any> {
-        console.log(value);
         const newValue = plainToInstance(LoginUserDto, value);
         const errors = await validate(newValue);
         if(errors.length > 0) {

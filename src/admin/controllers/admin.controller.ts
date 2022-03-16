@@ -6,7 +6,7 @@ import { UpdateUserDto } from "src/user/dto/update-user.dto";
 import { User } from "src/user/schemas/user.schema";
 import { AdminService } from "../services/admin.service";
 import { AdminCreateUsersValidation } from "../validations/admin-create-users.validation";
-import { ListStringValidation } from "../validations/admin-get-users.validation";
+import { AdminGetUsersValidation } from "../validations/admin-get-users.validation";
 import { AdminUpdateUsersValidation } from "../validations/admin-update-users.validation";
 
 @Catch()
@@ -41,7 +41,7 @@ export class AdminController {
         }
     }
 
-    @UsePipes(ListStringValidation)
+    @UsePipes(AdminGetUsersValidation)
     @UseGuards(JwtAuthGuard)
     @Post("get")
     async getUsers(@Body() listId: string[], @Request() req): Promise<User[]> {
@@ -53,7 +53,7 @@ export class AdminController {
         }
     }
 
-    @UsePipes(ListStringValidation)
+    @UsePipes(AdminGetUsersValidation)
     @UseGuards(JwtAuthGuard)
     @Delete("delete")
     async deleteUsers(@Body() listId: string[], @Request() req): Promise<any> {
