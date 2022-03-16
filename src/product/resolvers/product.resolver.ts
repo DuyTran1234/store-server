@@ -21,7 +21,8 @@ export class ProductResolver {
     async getProducts(@Args({ name: "listProductId", type: () => [String] }) ids: string[], @CurrentUser() user: any) {
         const checkAbility = await this.adminAbility.adminManage(user.id);
         if(checkAbility) {
-            // const getProducts = 
+            const getProducts = await this.productService.getProducts(ids);
+            return getProducts;
         }
     }
 

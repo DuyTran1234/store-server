@@ -10,6 +10,19 @@ export class ProductService {
         @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     ) { }
 
+    async getProducts(ids: string[]): Promise<Product[]> {
+        try {
+            const getProducts = await this.productModel.find({
+                _id: {
+                    $in: ids
+                }
+            }).lean();
+            return getProducts;
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
+
     async createProdcuts(products: CreateProductDto[]): Promise<Product[]> {
         try {
             // const create = products.map(async (item) => {
@@ -34,7 +47,7 @@ export class ProductService {
         }
     }
 
-    async updateProducts() {
-        
-    }
+    // async updateProducts() {
+
+    // }
 }
