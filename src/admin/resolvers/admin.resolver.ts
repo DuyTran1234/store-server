@@ -52,4 +52,14 @@ export class AdminResolver {
            return updateUsers;
        }
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Mutation((returns) => String)
+    async deleteUsers(@Args({name: "listId", type: () => [String]}) listId: string[], @CurrentUser() user: any): Promise<any> {
+        const checkAbility = await this.adminAbility.adminManage(user.id);
+        if(checkAbility) {
+            const deleteUsers = await this.adminService.deleteUsers(listId);
+            return deleteUsers;
+        } 
+    }
 }
