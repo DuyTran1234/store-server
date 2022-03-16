@@ -56,7 +56,7 @@ export class AdminController {
     @UsePipes(AdminGetUsersValidation)
     @UseGuards(JwtAuthGuard)
     @Delete("delete")
-    async deleteUsers(@Body() listId: string[], @Request() req): Promise<any> {
+    async deleteUsers(@Body() listId: string[], @Request() req): Promise<string> {
         const userLoginId = req.user.id;
         const ability = await this.adminAbilityService.adminManage(userLoginId);
         if(ability) {

@@ -57,16 +57,16 @@ export class AdminService {
         }
     }
 
-    async deleteUsers(listId: string[]): Promise<any> {
+    async deleteUsers(listId: string[]): Promise<string> {
         try {
             const deleteUsers = await this.userModel.deleteMany({
                 _id: {
                     $in: listId,
                 },
             });
-            return deleteUsers;
+            return `the number of documents deleted: ${deleteUsers.deletedCount}`;
         } catch (error) {
-            throw new BadRequestException("delete users failed");
+            throw new BadRequestException("delete list users failed");
         }
     }
 }
