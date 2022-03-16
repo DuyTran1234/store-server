@@ -60,6 +60,6 @@ export class AdminResolver {
         if(checkAbility) {
             const deleteUsers = await this.adminService.deleteUsers(listId);
             return deleteUsers;
-        } 
+        }
     }
 }

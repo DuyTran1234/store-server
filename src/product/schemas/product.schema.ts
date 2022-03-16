@@ -19,9 +19,7 @@ export class Product {
     })
     price: number;
 
-    @Prop({
-        required: true,
-    })
+    @Prop()
     image: string;
 
     @Prop({

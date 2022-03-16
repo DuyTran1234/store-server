@@ -1,27 +1,31 @@
+import { ArgsType, Field, Float, InputType, Int } from "@nestjs/graphql";
 import { IsDefined, Matches, Validate } from "class-validator";
 import { ProductRegex } from "../regex/product.regex";
-import { CustomQuantityValidation } from "../validations/custom-quantity.validation";
-import { CustomTypeValidation } from "../validations/custom-type.validation";
+import { ProductQuantityValidation } from "../validations/custom-quantity.validation";
+import { ProductTypeValidation } from "../validations/custom-type.validation";
 
+@InputType()
+@ArgsType()
 export class CreateProductDto {
-    @IsDefined()
+    @Field()
     @Matches(ProductRegex.name)
     name: string;
 
-    @IsDefined()
+    @Field((type) => Float)
     price: number;
 
-    @IsDefined()
+    @Field({ nullable: true })
     image: string;
 
+    @Field({ nullable: true })
     @Matches(ProductRegex.description)
     description: string;
 
-    @IsDefined()
-    @Validate(CustomTypeValidation)
+    @Field()
+    @Validate(ProductTypeValidation)
     type: string;
 
-    @IsDefined()
-    @Validate(CustomQuantityValidation)
+    @Field((type) => Int)
+    @Validate(ProductQuantityValidation)
     quantity: number;
 }

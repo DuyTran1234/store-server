@@ -1,7 +1,7 @@
 import { IsDefined, IsNumber, IsString, Matches, Validate } from "class-validator";
 import { ProductRegex } from "../regex/product.regex";
-import { CustomQuantityValidation } from "../validations/custom-quantity.validation";
-import { CustomTypeValidation } from "../validations/custom-type.validation";
+import { ProductQuantityValidation } from "../validations/custom-quantity.validation";
+import { ProductTypeValidation } from "../validations/custom-type.validation";
 
 export class UpdateProductDto {
     @IsDefined()
@@ -19,9 +19,9 @@ export class UpdateProductDto {
     @Matches(ProductRegex.description)
     description: string;
 
-    @Validate(CustomTypeValidation)
+    @Validate(ProductTypeValidation)
     type: string;
 
-    @Validate(CustomQuantityValidation)
+    @Validate(ProductQuantityValidation)
     quantity: number;
 }

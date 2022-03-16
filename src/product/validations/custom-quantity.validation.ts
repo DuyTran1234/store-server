@@ -1,7 +1,7 @@
 import { ValidationArguments, ValidatorConstraintInterface } from "class-validator";
 import { ProductRegex } from "../regex/product.regex";
 
-export class CustomQuantityValidation implements ValidatorConstraintInterface {
+export class ProductQuantityValidation implements ValidatorConstraintInterface {
     validate(value: any, validationArguments?: ValidationArguments): boolean | Promise<boolean> {
         return ProductRegex.quantity(value);
     }
