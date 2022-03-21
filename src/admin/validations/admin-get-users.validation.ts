@@ -1,16 +1,16 @@
 import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
-
+import { plainToInstance } from "class-transformer";
+import { GetUsersDto } from "../dto/get-users.dto";
 @Injectable()
 export class AdminGetUsersValidation implements PipeTransform {
     async transform(value: any, metadata: ArgumentMetadata) {
-        if(!Array.isArray(value)) {
-            throw new BadRequestException("Validation get users failed, data is not an array of strings");
-        }
-        const check = value.every((item) => typeof item === "string");
-        if(!check) {
-            throw new BadRequestException("Validation get users failed, data is not an array of strings");
+        const newValue = plainToInstance(GetUsersDto, value);
+        for (const property in newValue) {
+            if (newValue[`${property}`] && !Array.isArray(newValue[`${property}`])) {
+                throw new BadRequestException(`Validation get users failed, property ${property} is not an array of string`);
+            }
         }
         return value;
     }
-    
+
 }

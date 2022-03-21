@@ -7,8 +7,9 @@ import { UserService } from "src/user/services/user.service";
 import { HashDataService } from "src/shared/services/hash-data.service";
 import { UpdateUserDto } from "src/user/dto/update-user.dto";
 import { LazyModuleLoader } from "@nestjs/core";
+import { GetUsersDto } from "../dto/get-users.dto";
+import mongoose from "mongoose";
 
-@Catch()
 @Injectable()
 export class AdminService {
     constructor(
@@ -20,36 +21,93 @@ export class AdminService {
 
     async createUsers(users: CreateUserDto[]): Promise<User[]> {
         try {
-            const createUsers = users.map(async (item) => {
-                const create = await this.userService.createUser(item, true);
-                return create;
-            });
-            const rs = await Promise.all<User>(createUsers);
-            return rs;
+            const getUsersDto = {
+                listUsername: [],
+                listPhone: [],
+                listEmail: [],
+            }
+            for (const item of users) {
+                getUsersDto.listUsername.push(item.username);
+                getUsersDto.listEmail.push(item.email);
+                getUsersDto.listPhone.push(item.phone);
+            }
+            const checkUsers = await this.getUsers(getUsersDto);
+            if (checkUsers.length > 0) {
+                throw new BadRequestException(`username: ${checkUsers[0].username} exists`);
+            }
+            const createUsers = await this.userModel.insertMany(users);
+            return createUsers;
         } catch (error) {
-            throw new BadRequestException(error.message);
+            throw error;
         }
     }
 
     async updateUsers(users: UpdateUserDto[]): Promise<User[]> {
         try {
-            const updateUsers = users.map(async (item) => {
-                const update = await this.userService.updateUser(item, true);
-                return update;
+            const listIdUpdate = users.map((item) => item.id);
+            const arrUpdate = users.map((item) => {
+                return {
+                    insertOne: {
+                        document: { ...item },
+                    },
+                    updateOne: {
+                        filter: { _id: item.id },
+                        update: { ...item },
+                    }
+                }
             });
-            const rs = await Promise.all<User>(updateUsers);
-            return rs;
+            // const updateUsers = users.map(async (item) => {
+            //     const update = await this.userService.updateUser(item, true);
+            //     return update;
+            // });
+            // const rs = await Promise.all<User>(updateUsers);
+            const updateUsers = await this.userModel.bulkWrite(arrUpdate)
+                .then(async (res) => {
+                    const update = await this.getUsers({ listId: listIdUpdate });
+                    return update;
+                })
+            return updateUsers;
         } catch (error) {
-            throw new BadRequestException(error.message);
+            // throw new BadRequestException(error.message);
+            throw error;
         }
+        // try {
+        //     const updateUsers = await this.userModel.updateMany(users);
+        //     return updateUsers;
+        // } catch (error) {
+        //     throw error;
+        // }
     }
 
-    async getUsers(listId: string[]): Promise<User[]> {
+    async getUsers(getUsersDto: GetUsersDto): Promise<User[]> {
         try {
             const get = await this.userModel.find({
-                _id: {
-                    $in: listId,
-                }
+                $or: [
+                    {
+                        _id: {
+                            $ne: null,
+                            $in: getUsersDto.listId ? getUsersDto.listId : [],
+                        }
+                    },
+                    {
+                        username: {
+                            $ne: null,
+                            $in: getUsersDto.listUsername ? getUsersDto.listUsername : [],
+                        }
+                    },
+                    {
+                        email: {
+                            $ne: null,
+                            $in: getUsersDto.listEmail ? getUsersDto.listEmail : [],
+                        }
+                    },
+                    {
+                        phone: {
+                            $ne: null,
+                            $in: getUsersDto.listPhone ? getUsersDto.listPhone : [],
+                        }
+                    },
+                ]
             });
             return get;
         } catch (error) {

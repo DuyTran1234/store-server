@@ -17,7 +17,7 @@ export class CaslUserAbilityFactory {
 
     async createForUser(userId: string) {
         const user = await this.userService.findUser({ id: userId });
-        if(!user) {
+        if (!user) {
             throw new UnauthorizedException("user not exists or deleted");
         }
         const { can, cannot, build } = new AbilityBuilder<UserAbility>(Ability as AbilityClass<UserAbility>);
@@ -26,7 +26,7 @@ export class CaslUserAbilityFactory {
             can(Action.MANAGE, "all");
         }
         else if (user.role === "user") {
-            can(Action.MANAGE, User, { username: user.username });
+            can(Action.MANAGE, User, { username: { $eq: user.username } });
         }
         return build({
             detectSubjectType: item => item.constructor as ExtractSubjectType<Subjects>

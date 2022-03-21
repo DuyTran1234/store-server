@@ -25,21 +25,6 @@ export class ProductService {
 
     async createProdcuts(products: CreateProductDto[]): Promise<Product[]> {
         try {
-            // const create = products.map(async (item) => {
-            //     const createProduct = await new this.productModel(item).save();
-            //     return createProduct;
-            // });
-            // const rs = await Promise.all<Product>(create);
-            // return rs;
-            // const isDuplicate = products.find(async (item) => {
-            //     const findProduct = await this.productModel.findOne({
-            //         $or: [
-            //             {
-
-            //             }
-            //         ]
-            //     });
-            // });
             const create = await this.productModel.insertMany(products);
             return create;
         } catch (error) {

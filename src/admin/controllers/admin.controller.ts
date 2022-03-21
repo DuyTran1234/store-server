@@ -29,17 +29,17 @@ export class AdminController {
         }
     }
 
-    @UsePipes(AdminUpdateUsersValidation)
-    @UseGuards(JwtAuthGuard)
-    @Post("update")
-    async updateUsers(@Body() users: UpdateUserDto[], @Request() req): Promise<User[]> {
-        const userLoginId = req.user.id;
-        const ability = await this.adminAbilityService.adminManage(userLoginId);
-        if(ability) {
-            const rs = await this.adminService.updateUsers(users);
-            return rs;
-        }
-    }
+    // @UsePipes(AdminUpdateUsersValidation)
+    // @UseGuards(JwtAuthGuard)
+    // @Post("update")
+    // async updateUsers(@Body() users: UpdateUserDto[], @Request() req): Promise<User[]> {
+    //     const userLoginId = req.user.id;
+    //     const ability = await this.adminAbilityService.adminManage(userLoginId);
+    //     if (ability) {
+    //         const rs = await this.adminService.updateUsers(users);
+    //         return rs;
+    //     }
+    // }
 
     @UsePipes(AdminGetUsersValidation)
     @UseGuards(JwtAuthGuard)
@@ -47,9 +47,9 @@ export class AdminController {
     async getUsers(@Body() listId: string[], @Request() req): Promise<User[]> {
         const userLoginId = req.user.id;
         const ability = await this.adminAbilityService.adminManage(userLoginId);
-        if(ability) {
-            const rs = await this.adminService.getUsers(listId);
-            return rs;
+        if (ability) {
+            // const rs = await this.adminService.getUsers(listId);
+            return null;
         }
     }
 
@@ -59,7 +59,7 @@ export class AdminController {
     async deleteUsers(@Body() listId: string[], @Request() req): Promise<string> {
         const userLoginId = req.user.id;
         const ability = await this.adminAbilityService.adminManage(userLoginId);
-        if(ability) {
+        if (ability) {
             const rs = await this.adminService.deleteUsers(listId);
             return rs;
         }
