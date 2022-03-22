@@ -79,12 +79,12 @@ export class UserService {
         updateUserDto.role = isAdmin ? updateUserDto.role : "user";
         updateUserDto.password = updateUserDto.password ? await this.hashDataService.hashData(updateUserDto.password) : undefined;
         const update = await this.userModel.findOneAndUpdate(
-            { _id: updateUserDto.id },
+            { _id: updateUserDto._id },
             updateUserDto,
             { new: true }
         );
         if (!update) {
-            throw new BadRequestException(`update user ${updateUserDto.id} failed`);
+            throw new BadRequestException(`update user ${updateUserDto._id} failed`);
         }
         return update;
     }

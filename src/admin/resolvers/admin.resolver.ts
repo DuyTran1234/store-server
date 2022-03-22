@@ -9,6 +9,7 @@ import { User } from "src/user/models/user.model";
 import { GetUsersDto } from "../dto/get-users.dto";
 import { AdminService } from "../services/admin.service";
 import { AdminCreateUsersValidation } from "../validations/admin-create-users.validation";
+import { AdminDeleteUsersValidation } from "../validations/admin-delete-users.validation";
 import { AdminGetUsersValidation } from "../validations/admin-get-users.validation";
 import { AdminUpdateUsersValidation } from "../validations/admin-update-users.validation";
 
@@ -58,7 +59,9 @@ export class AdminResolver {
 
     @UseGuards(JwtAuthGuard)
     @Mutation((returns) => String)
-    async deleteUsers(@Args({ name: "listId", type: () => [String] }) listId: string[], @CurrentUser() user: any): Promise<any> {
+    async deleteUsers(
+        @Args({ name: "listId", type: () => [String] }, AdminDeleteUsersValidation) listId: string[],
+        @CurrentUser() user: any): Promise<any> {
         const checkAbility = await this.adminAbility.adminManage(user.id);
         if (checkAbility) {
             const deleteUsers = await this.adminService.deleteUsers(listId);

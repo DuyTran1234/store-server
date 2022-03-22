@@ -6,7 +6,7 @@ import { CustomDateValidation } from "../validations/custom-date.validation";
 @ArgsType()
 export class UpdateUserDto {
     @Field()
-    id: string;
+    _id: string;
 
     @Field({nullable: true})
     @Matches(UserRegex.username)

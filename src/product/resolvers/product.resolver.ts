@@ -4,6 +4,7 @@ import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AdminAbilityService } from "src/casl/services/admin-ability.service";
 import { CurrentUser } from "src/user/custom-decorators/current-user.decorator";
 import { CreateProductDto } from "../dto/create-product.dto";
+import { UpdateProductDto } from "../dto/update-product.dto";
 import { Product } from "../models/product.model";
 import { ProductService } from "../services/product.service";
 import { CreateProductsValidation } from "../validations/create-products.validation";
@@ -20,7 +21,7 @@ export class ProductResolver {
     @Query((returns) => [Product])
     async getProducts(@Args({ name: "listProductId", type: () => [String] }) ids: string[], @CurrentUser() user: any) {
         const checkAbility = await this.adminAbility.adminManage(user.id);
-        if(checkAbility) {
+        if (checkAbility) {
             const getProducts = await this.productService.getProducts(ids);
             return getProducts;
         }
@@ -39,4 +40,29 @@ export class ProductResolver {
         }
     }
 
+    @UseGuards(JwtAuthGuard)
+    @Mutation(returns => [Product])
+    async updateProducts(
+        @Args({ name: "updateProducts", type: () => [UpdateProductDto] }) updateProducts: UpdateProductDto[],
+        @CurrentUser() user: any,
+    ): Promise<any> {
+        const checkAbility = await this.adminAbility.adminManage(user.id);
+        if (checkAbility) {
+            const update = await this.productService.updateProducts(updateProducts);
+            return update;
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Mutation(returns => String)
+    async deleteProducts(
+        @Args({ name: "listProductId", type: () => [String] }) ids: string[],
+        @CurrentUser() user: any,
+    ): Promise<string> {
+        const checkAbility = await this.adminAbility.adminManage(user.id);
+        if (checkAbility) {
+            const deleteProducts = await this.productService.deleteProducts(ids);
+            return deleteProducts;
+        }
+    }
 }

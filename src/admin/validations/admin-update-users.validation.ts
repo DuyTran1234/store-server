@@ -15,9 +15,9 @@ export class AdminUpdateUsersValidation implements PipeTransform {
             const errors = await validate(plainObj, {
                 skipMissingProperties: true,
             });
-            if(errors.length > 0) {
+            if (errors.length > 0) {
                 const message = await getMessageError(errors[0]);
-                throw new BadRequestException(`Validation update users failed, ${message}`);
+                throw new BadRequestException(`Validation update user ${plainObj._id} failed, ${message}`);
             }
         }
         return value;

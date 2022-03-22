@@ -31,7 +31,7 @@ export class UserController {
     @Post("update")
     async updateUser(@Body() updateUserDto: UpdateUserDto, @Request() req): Promise<User> {
         const userId = req.user.id;
-        const checkAbility = await this.userAbilityService.updateUser(userId, updateUserDto.id);
+        const checkAbility = await this.userAbilityService.updateUser(userId, updateUserDto._id);
         if (checkAbility) {
             const update = await this.userService.updateUser(updateUserDto);
             return update;

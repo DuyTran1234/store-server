@@ -44,7 +44,7 @@ export class UserResolver {
     @UseGuards(JwtAuthGuard)
     @Mutation((returns) => User)
     async updateUser(@Args(UpdateUserValidation) updateUserDto: UpdateUserDto, @CurrentUser() user: any): Promise<any> {
-        const checkAbility = await this.userAbility.updateUser(user.id, updateUserDto.id);
+        const checkAbility = await this.userAbility.updateUser(user.id, updateUserDto._id);
         if (checkAbility) {
             const update = await this.userService.updateUser(updateUserDto) as any;
             const newObj = update.toObject();

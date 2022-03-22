@@ -42,25 +42,17 @@ export class AdminService {
         }
     }
 
-    async updateUsers(users: UpdateUserDto[]): Promise<User[]> {
+    async updateUsers(users: UpdateUserDto[]): Promise<any> {
         try {
-            const listIdUpdate = users.map((item) => item.id);
+            const listIdUpdate = users.map((item) => item._id);
             const arrUpdate = users.map((item) => {
                 return {
-                    insertOne: {
-                        document: { ...item },
-                    },
                     updateOne: {
-                        filter: { _id: item.id },
+                        filter: { _id: item._id },
                         update: { ...item },
                     }
                 }
             });
-            // const updateUsers = users.map(async (item) => {
-            //     const update = await this.userService.updateUser(item, true);
-            //     return update;
-            // });
-            // const rs = await Promise.all<User>(updateUsers);
             const updateUsers = await this.userModel.bulkWrite(arrUpdate)
                 .then(async (res) => {
                     const update = await this.getUsers({ listId: listIdUpdate });
@@ -68,15 +60,8 @@ export class AdminService {
                 })
             return updateUsers;
         } catch (error) {
-            // throw new BadRequestException(error.message);
             throw error;
         }
-        // try {
-        //     const updateUsers = await this.userModel.updateMany(users);
-        //     return updateUsers;
-        // } catch (error) {
-        //     throw error;
-        // }
     }
 
     async getUsers(getUsersDto: GetUsersDto): Promise<User[]> {
@@ -108,7 +93,7 @@ export class AdminService {
                         }
                     },
                 ]
-            });
+            }).lean().exec();
             return get;
         } catch (error) {
             throw new BadRequestException("get list users failed");
