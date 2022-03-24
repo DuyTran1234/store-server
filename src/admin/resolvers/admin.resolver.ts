@@ -7,6 +7,7 @@ import { CreateUserDto } from "src/user/dto/create-user.dto";
 import { UpdateUserDto } from "src/user/dto/update-user.dto";
 import { User } from "src/user/models/user.model";
 import { GetUsersDto } from "../dto/get-users.dto";
+import { PaginationUsersDto } from "../dto/pagination-users.dto";
 import { AdminService } from "../services/admin.service";
 import { AdminCreateUsersValidation } from "../validations/admin-create-users.validation";
 import { AdminDeleteUsersValidation } from "../validations/admin-delete-users.validation";
@@ -66,6 +67,20 @@ export class AdminResolver {
         if (checkAbility) {
             const deleteUsers = await this.adminService.deleteUsers(listId);
             return deleteUsers;
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Mutation((returns) => [User])
+    async paginationUsers(
+        @CurrentUser() user: any,
+        @Args({ name: "paginationUsersDto", type: () => PaginationUsersDto }) paginationUsersDto: PaginationUsersDto,
+    ): Promise<any> {
+        const checkAbility = await this.adminAbility.adminManage(user.id);
+        if (checkAbility) {
+            const users = await this.adminService.
+                paginationUsers(paginationUsersDto.nDocument, paginationUsersDto.nPage, paginationUsersDto.property, paginationUsersDto.order);
+            return users;
         }
     }
 }

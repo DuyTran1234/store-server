@@ -1,10 +1,12 @@
 import { Ability, AbilityBuilder, AbilityClass, ExtractSubjectType, InferSubjects } from "@casl/ability";
 import { Catch, forwardRef, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import mongoose from "mongoose";
+import { UserProduct } from "src/user-product/schemas/user-product.schema";
 import { User } from "src/user/schemas/user.schema";
 import { UserService } from "src/user/services/user.service";
 import { Action } from "../action.enum";
 
-type Subjects = InferSubjects<typeof User> | "all";
+type Subjects = InferSubjects<typeof User | typeof UserProduct> | "all";
 
 export type UserAbility = Ability<[Action, Subjects]>;
 
@@ -26,7 +28,10 @@ export class CaslUserAbilityFactory {
             can(Action.MANAGE, "all");
         }
         else if (user.role === "user") {
-            can(Action.MANAGE, User, { username: { $eq: user.username } });
+            can(Action.MANAGE, User, { _id: user._id });
+            can([Action.READ, Action.CREATE], UserProduct, {
+                userId: user._id,
+            });
         }
         return build({
             detectSubjectType: item => item.constructor as ExtractSubjectType<Subjects>

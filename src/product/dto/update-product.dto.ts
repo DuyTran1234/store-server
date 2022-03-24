@@ -7,7 +7,7 @@ import { ProductTypeValidation } from "../validations/custom-type.validation";
 @ArgsType()
 export class UpdateProductDto {
     @Field(type => ID)
-    id: string;
+    _id: string;
 
     @Field({ nullable: true })
     @Matches(ProductRegex.name)

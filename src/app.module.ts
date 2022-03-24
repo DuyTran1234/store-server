@@ -9,6 +9,7 @@ import { AuthModule } from "./auth/auth.module";
 import { CaslModule } from "./casl/casl.module";
 import { ProductModule } from "./product/product.module";
 import { SharedModule } from "./shared/shared.module";
+import { UserProductModule } from "./user-product/user-product.module";
 import { UserResolver } from "./user/resolvers/user.resolver";
 import { UserModule } from "./user/user.module";
 
@@ -31,6 +32,7 @@ const schemaFilePath = join(process.cwd(), "src", "auto-schemas", "schema.gql");
             driver: ApolloDriver,
             autoSchemaFile: schemaFilePath,
         }),
+        UserProductModule,
     ],
     providers: [],
     controllers: [],

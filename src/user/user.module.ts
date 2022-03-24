@@ -2,6 +2,7 @@ import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from "src/auth/auth.module";
 import { CaslModule } from "src/casl/casl.module";
+import { UserProductModule } from "src/user-product/user-product.module";
 import { UserController } from "./controllers/user.controller";
 import { UserResolver } from "./resolvers/user.resolver";
 import { User, UserSchema } from "./schemas/user.schema";

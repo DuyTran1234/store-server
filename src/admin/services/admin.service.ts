@@ -112,4 +112,37 @@ export class AdminService {
             throw new BadRequestException("delete list users failed");
         }
     }
+
+    async paginationUsers(nDocument: number, nPage: number, propertyStr?: string, orderNum?: number): Promise<any> {
+        try {
+            const property = propertyStr ? propertyStr : "_id";
+            const checkOrder = orderNum ? orderNum : 0;
+            const order = checkOrder >= 0 ? 1 : -1;
+            const res = await this.userModel.aggregate([
+                {
+                    $sort: {
+                        [property]: order,
+                    }
+                },
+                {
+                    $facet: {
+                        metadata: [{ $count: "total" }],
+                        data: [{ $skip: (nPage - 1) * nDocument }, { $limit: nDocument }],
+                        project: [
+                            {
+                                $project: {
+                                    data: 1,
+                                    total: { $arrayElemAt: ['$metadata.total', 0] }
+                                }
+                            }
+                        ]
+                    },
+                },
+            ]).allowDiskUse(true);
+            const result = res[0]?.data;
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

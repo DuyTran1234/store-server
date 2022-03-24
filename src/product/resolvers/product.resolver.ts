@@ -4,6 +4,7 @@ import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { AdminAbilityService } from "src/casl/services/admin-ability.service";
 import { CurrentUser } from "src/user/custom-decorators/current-user.decorator";
 import { CreateProductDto } from "../dto/create-product.dto";
+import { PaginationProductsDto } from "../dto/pagination-products.dto";
 import { UpdateProductDto } from "../dto/update-product.dto";
 import { Product } from "../models/product.model";
 import { ProductService } from "../services/product.service";
@@ -56,13 +57,27 @@ export class ProductResolver {
     @UseGuards(JwtAuthGuard)
     @Mutation(returns => String)
     async deleteProducts(
-        @Args({ name: "listProductId", type: () => [String] }) ids: string[],
+        @Args({ name: "listProductId", type: () => [String], nullable: true }) ids: string[],
         @CurrentUser() user: any,
     ): Promise<string> {
         const checkAbility = await this.adminAbility.adminManage(user.id);
         if (checkAbility) {
             const deleteProducts = await this.productService.deleteProducts(ids);
             return deleteProducts;
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Mutation(returns => [Product])
+    async paginationProduct(
+        @CurrentUser() user: any,
+        @Args({ name: "paginationProductsDto", type: () => PaginationProductsDto }) paginationProducts: PaginationProductsDto,
+    ): Promise<any> {
+        const checkAbility = await this.adminAbility.adminManage(user.id);
+        if (checkAbility) {
+            const users = await this.productService.
+                paginationProducts(paginationProducts.nDocument, paginationProducts.nPage, paginationProducts.property, paginationProducts.order);
+            return users;
         }
     }
 }

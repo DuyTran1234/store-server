@@ -36,12 +36,12 @@ export class ProductService {
 
     async updateProducts(products: UpdateProductDto[]): Promise<Product[]> {
         try {
-            const listId = products.map((item) => item.id);
+            const listId = products.map((item) => item._id);
             const queries = products.map((item) => {
                 return {
                     updateOne: {
                         filter: {
-                            _id: new mongoose.Types.ObjectId(item.id),
+                            _id: new mongoose.Types.ObjectId(item._id),
                         },
                         update: { ...item },
                     }
@@ -60,8 +60,45 @@ export class ProductService {
 
     async deleteProducts(ids: string[]): Promise<string> {
         try {
-            const deleteProducts = await this.productModel.deleteMany(ids);
+            const deleteProducts = await this.productModel.deleteMany({
+                _id: {
+                    $in: ids,
+                }
+            });
             return `the number of products deleted: ${deleteProducts.deletedCount}`;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async paginationProducts(nDocument: number, nPage: number, propertyStr?: string, orderNum?: number): Promise<any> {
+        try {
+            const property = propertyStr ? propertyStr : "_id";
+            const checkOrder = orderNum ? orderNum : 0;
+            const order = checkOrder >= 0 ? 1 : -1;
+            const res = await this.productModel.aggregate([
+                {
+                    $sort: {
+                        [property]: order,
+                    }
+                },
+                {
+                    $facet: {
+                        metadata: [{ $count: "total" }],
+                        data: [{ $skip: (nPage - 1) * nDocument }, { $limit: nDocument }],
+                        project: [
+                            {
+                                $project: {
+                                    data: 1,
+                                    total: { $arrayElemAt: ['$metadata.total', 0] }
+                                }
+                            }
+                        ]
+                    },
+                },
+            ]).allowDiskUse(true);
+            const result = res[0].data;
+            return result;
         } catch (error) {
             throw error;
         }

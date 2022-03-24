@@ -7,6 +7,7 @@ import { HashDataService } from "src/shared/services/hash-data.service";
 import { RandomTokenService } from "src/shared/services/random-token.service";
 import { UpdateUserDto } from "../dto/update-user.dto";
 import { LazyModuleLoader } from "@nestjs/core";
+import { UserProductService } from "src/user-product/services/user-product.service";
 
 @Catch()
 @Injectable()
@@ -110,16 +111,4 @@ export class UserService {
         }
         return update;
     }
-
-    // async checkDuplicateUpdateUser(updateUserDto: UpdateUserDto, user: User): Promise<boolean> {
-    //     for (const property in updateUserDto) {
-    //         if (property !== "username" && property !== "password" && property !== "") {
-    //             continue;
-    //         }
-    //         if (user[`${property}`] && updateUserDto[`${property}`] === user[`${property}`]) {
-    //             throw new BadRequestException(`property ${property} duplicate`);
-    //         }
-    //     }
-    //     return true;
-    // }
 }
