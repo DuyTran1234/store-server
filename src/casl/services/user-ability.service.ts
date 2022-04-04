@@ -47,10 +47,6 @@ export class UserAbilityService {
         throw new UnauthorizedException("Restricted user");
     }
 
-    // async getUserProduct(userId: string, getUserProductIds: string[]) {
-    //     const ability = await this.userAbilityFactory.createForUser(userId);
-    //     // const getProducts = await this.getUserProduct();
-    // }
     async createUserProducts(userId: string, createUserProducts: CreateUserProductDto[]): Promise<boolean> {
         const ability = await this.userAbilityFactory.createForUser(userId);
         const plainArrObj = createUserProducts.map((item) => plainToInstance(UserProduct, item));

@@ -69,7 +69,7 @@ export class UserService {
                         }
                     }
                 ],
-            }).lean();
+            }).lean().exec();
             return user;
         } catch (error) {
             throw new BadRequestException(`user not found`);

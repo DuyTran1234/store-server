@@ -4,7 +4,7 @@ import { CustomPropertyValidate } from "../validations/custom-input-property.val
 
 @InputType()
 @ArgsType()
-export class UserGetListProducts {
+export class UserGetListProductsDto {
     @Field(type => Int)
     nDocument: number;
 

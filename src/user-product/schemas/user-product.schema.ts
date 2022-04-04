@@ -12,7 +12,7 @@ export type UserProductDocument = UserProduct & Document;
     collection: "user-products"
 })
 export class UserProduct {
-    _id: mongoose.Types.ObjectId; 
+    _id: mongoose.Types.ObjectId;
 
     @Prop({
         required: true,
@@ -53,7 +53,7 @@ export class UserProduct {
 
     static async getPropertiesNames(): Promise<string[]> {
         return [
-            "_id", "userId", "productId", "quantity", "stateDelivery", "isPayment", "methodPayment",
+            "_id", "userId", "productId", "quantity", "stateDelivery", "isPayment", "methodPayment", "createdAt", "updatedAt"
         ];
     }
 }
