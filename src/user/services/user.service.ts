@@ -7,11 +7,11 @@ import { HashDataService } from "src/shared/services/hash-data.service";
 import { RandomTokenService } from "src/shared/services/random-token.service";
 import { UpdateUserDto } from "../dto/update-user.dto";
 import { LazyModuleLoader } from "@nestjs/core";
-import { UserProductService } from "src/user-product/services/user-product.service";
+import { UserServiceInterface } from "./interfaces/user.service.interface";
 
 @Catch()
 @Injectable()
-export class UserService {
+export class UserService implements UserServiceInterface {
     constructor(
         private lazyModuleLoader: LazyModuleLoader,
         @InjectModel(User.name) private userModel: Model<UserDocument>,

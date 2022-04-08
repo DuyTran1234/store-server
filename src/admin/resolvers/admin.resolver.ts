@@ -1,6 +1,7 @@
 import { UseGuards, UsePipes } from "@nestjs/common";
 import { Args, Int, Mutation, Query, Resolver } from "@nestjs/graphql";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { AdminManageGuard } from "src/casl/guards/admin/admin-manage.guard";
 import { AdminAbilityService } from "src/casl/services/admin-ability.service";
 import { CurrentUser } from "src/user/custom-decorators/current-user.decorator";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
@@ -13,39 +14,36 @@ import { AdminCreateUsersValidation } from "../validations/admin-create-users.va
 import { AdminDeleteUsersValidation } from "../validations/admin-delete-users.validation";
 import { AdminGetUsersValidation } from "../validations/admin-get-users.validation";
 import { AdminUpdateUsersValidation } from "../validations/admin-update-users.validation";
+import { AdminResolverInterface } from "./interfaces/admin.resolver.interface";
 
 @Resolver((of) => User)
-export class AdminResolver {
+export class AdminResolver implements AdminResolverInterface {
     constructor(
         private adminAbility: AdminAbilityService,
         private adminService: AdminService,
     ) { }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, AdminManageGuard)
     @Query((returns) => [User])
     async getListUsers(
+        @CurrentUser() user: any,
         @Args({ name: "getUsersDto", type: () => GetUsersDto }, AdminGetUsersValidation) getUsers: GetUsersDto,
-        @CurrentUser() user: any) {
-        const checkAbility = await this.adminAbility.adminManage(user.id);
-        if (checkAbility) {
-            const listUser = await this.adminService.getUsers(getUsers);
-            return listUser;
-        }
+    ) {
+        const listUser = await this.adminService.getUsers(getUsers);
+        return listUser;
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, AdminManageGuard)
     @Mutation((returns) => [User])
     async createListUsers(
-        @Args({ name: "createUserList", type: () => [CreateUserDto] }, AdminCreateUsersValidation) createUserDtoList: CreateUserDto[],
-        @CurrentUser() user: any) {
-        const checkAbility = await this.adminAbility.adminManage(user.id);
-        if (checkAbility) {
-            const createUsers = await this.adminService.createUsers(createUserDtoList);
-            return createUsers;
-        }
+        @CurrentUser() user: any,
+        @Args({ name: "createUserList", type: () => [CreateUserDto] }, AdminCreateUsersValidation) createUserDtoList: CreateUserDto[]
+    ) {
+        const createUsers = await this.adminService.createUsers(createUserDtoList);
+        return createUsers;
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, AdminManageGuard)
     @Mutation((returns) => [User])
     async updateListUsers(
         @Args({ name: "updateUsers", type: () => [UpdateUserDto] }, AdminUpdateUsersValidation) updateUsersList: UpdateUserDto[],
@@ -58,7 +56,7 @@ export class AdminResolver {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, AdminManageGuard)
     @Mutation((returns) => String)
     async deleteUsers(
         @Args({ name: "listId", type: () => [String] }, AdminDeleteUsersValidation) listId: string[],
@@ -70,7 +68,7 @@ export class AdminResolver {
         }
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, AdminManageGuard)
     @Mutation((returns) => [User])
     async paginationUsers(
         @CurrentUser() user: any,

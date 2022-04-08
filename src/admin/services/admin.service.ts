@@ -9,9 +9,10 @@ import { UpdateUserDto } from "src/user/dto/update-user.dto";
 import { LazyModuleLoader } from "@nestjs/core";
 import { GetUsersDto } from "../dto/get-users.dto";
 import mongoose from "mongoose";
+import { AdminServiceInterface } from "./interfaces/admin.service.interface";
 
 @Injectable()
-export class AdminService {
+export class AdminService implements AdminServiceInterface {
     constructor(
         private lazyModuleLoader: LazyModuleLoader,
         @InjectModel(User.name) private userModel: Model<UserDocument>,
